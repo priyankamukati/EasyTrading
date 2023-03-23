@@ -1,0 +1,81 @@
+//POST /api/user
+// Request
+{
+	"id": 1, 
+    "fullName": "Priyanka", 
+    "username": "priyanka", 
+    "email": "pmukati", 
+    "type": "user/admin",
+    "cash_balance":0
+}
+
+// Response 200 
+
+{
+	"id": 1, 
+    "fullName": "Priyanka", 
+    "username": "priyanka", 
+    "email": "pmukati", 
+    "type": "user/admin",
+    "cash_balance":0
+}
+
+////////////////////////////////////////
+
+//GET /api/user/{id}
+
+// Response 200 
+
+{
+	"id": 1, 
+    "fullName": "Priyanka", 
+    "username": "priyanka", 
+    "email": "pmukati", 
+    "type": "user/admin",
+    "cash_balance":500
+}
+
+////////////////////////////////////////
+
+//GET /api/stock
+
+// Response 200 
+
+{
+	"id", "ticker", "price" ... stock table
+}
+
+//POST /api/stock
+
+{
+	"id", "ticker" ... stock table
+}
+
+////////////////////////////////////////
+
+
+//GET /api/userstock?userId=<id>
+
+// userstock
+{"id", "ticker", "quantity" }
+// stock
+{"id", "current_price"}
+
+{"id", "ticker", "quantity", "current_price", "current_amount"}
+
+////////////////////////////////////////
+
+//POST /api/order?userId=<id>
+
+{
+    "stockid", "quantity", "order_nature", "order_type", "limit_price"
+}
+
+// Respone 200 {}
+
+//GET /api/order?userId=<id>
+
+//user_order
+"data" : [{
+    "stockid", "quantity", "oder_nature", "order_type", "limit_price"
+}]
