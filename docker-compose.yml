@@ -1,0 +1,57 @@
+version: '3.4'
+
+networks:
+  dockerapi-dev:
+    driver: bridge 
+
+services:
+  postgres_image:
+      image: postgres:15.2-alpine
+      #command: ["postgres -c config_file=/etc/pg_hba.conf"]
+      restart: always
+      environment: 
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+      logging:
+        options:
+          max-size: 10m
+          max-file: "3"
+      ports:
+        - '5435:5432'
+      volumes:
+        - ./Database/postgres-data:/var/lib/postgresql/data
+        - ./Database/sql/init.sql:/docker-entrypoint-initdb.d/A.sql
+        - ./Database/sql/execute_market_limit_buy.sql:/docker-entrypoint-initdb.d/B.sql
+        - ./Database/sql/execute_market_limit_sell.sql:/docker-entrypoint-initdb.d/C.sql
+        - ./Database/sql/update_marketstock_price.sql:/docker-entrypoint-initdb.d/D.sql
+      networks:
+        - dockerapi-dev
+
+  dotnet_api:
+    image: dockerapi:latest
+    depends_on:
+      - "postgres_image"
+    build:
+      context: ./TradingPlatform
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"     
+    environment:
+      DB_CONNECTION_STRING: "Server=postgres_image;Database=postgres;Port=5432;Userid=postgres;Password=postgres;"
+    networks:
+      - dockerapi-dev  
+
+  react_ui:
+      depends_on:
+        - "dotnet_api"
+      build:
+        context: ./TradingPlatformFrontend
+        dockerfile: Dockerfile
+      volumes:
+        - './TradingPlatformFrontend:/app'
+      ports:
+        - 3001:3000
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+      networks:
+        - dockerapi-dev
