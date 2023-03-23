@@ -35,7 +35,6 @@ This application is build for high resolution big monitors (preferred).
 6. Happy trading!
 
 
-
 # Following describes the 3 major components of this application in detail and their individual setup.
 
 ![EasyTrading - Arch Diagram](https://user-images.githubusercontent.com/112794721/227240799-34ad1311-daea-47c0-a48a-e5ebbf289ebf.svg)
