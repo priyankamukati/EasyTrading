@@ -18,6 +18,7 @@ import { saveUserInfo, saveUserInfoEmpty } from "../../store/saveUserInfo.slice"
 import { State } from "../../model/state";
 import { LoadingState } from "../../model/loadingState";
 import { getUserInfo, getUserInfoEmpty } from "../../store/getUserInfo.slice";
+import React from "react";
 Amplify.configure(config);
 
 interface ILoginContainerProps extends WithAuthenticatorProps {
@@ -65,17 +66,22 @@ const LoginContainer: FunctionComponent<ILoginContainerProps> & {
   
 
   const { route } = useAuthenticator(context => [context.route]);
+  const isFectched = React.useRef(false);
 
 
   useEffect(() => {
-    if (user && route === 'authenticated') {
-      getUserInfo();
-  }}, [user, getUserInfo]);
+    if (user?.attributes && route === 'authenticated') {
+      if(isFectched.current==false) {
+        console.log("authenticated:#### ", user)
+        isFectched.current = true;
+        getUserInfo();
+      }
+  }}, [user?.attributes, route, getUserInfo]);
 
 
   useEffect(() => {
-    if (user && getUserInfoResponse.error) {
-      console.log("error: ", getUserInfoResponse.error)
+    if (user?.attributes && getUserInfoResponse.error) {
+      console.log("error: probably a new user : ", getUserInfoResponse.error)
 
       // the user is not present
       const userInfo = new UserInfo();
@@ -87,32 +93,24 @@ const LoginContainer: FunctionComponent<ILoginContainerProps> & {
     } else {
 
       if (getUserInfoResponse.data && getUserInfoResponse.data.type) {
-        console.log("this is the type : ", getUserInfoResponse.data.type)
+        console.log("getUserInfoResponse type : ", getUserInfoResponse.data.type)
         if (getUserInfoResponse.data.type === "admin") {
-          console.log("get i am admin : ", getUserInfoResponse.data.type)
           navigate('/admin')
       } else {
-         console.log("get i am trader : ", getUserInfoResponse.data.type)
-         navigate('/home')
+          navigate('/home')
       }
     }
   }
-  }, [user, navigate, getUserInfoResponse]);
-
+  }, [user?.attributes, navigate, getUserInfoResponse]);
 
 
   useEffect(() => {
     if (saveUserInfoResponse.loading === LoadingState.Idle && saveUserInfoResponse.data?.type !== undefined) {
-
-      console.log(" saveUserInfoResponse: ", saveUserInfoResponse.loading, saveUserInfoResponse.data?.type)
-      console.log("this is the type : ", saveUserInfoResponse.data.type)
-
+      console.log("saveUserInfoResponse type : ", saveUserInfoResponse.data.type)
 
       if (saveUserInfoResponse.data.type === "admin") {
-          console.log("save i am admin : ", saveUserInfoResponse.data.type)
           navigate('/admin')
       } else {
-         console.log("save i am trader : ", saveUserInfoResponse.data.type)
          navigate('/home')
       }
 
@@ -144,7 +142,7 @@ LoginContainer.defaultProps = {};
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
-    saveUserInfo: (saveUserInfoRequest: UserInfo) => dispatch(saveUserInfo(saveUserInfoRequest)),
+      saveUserInfo: (saveUserInfoRequest: UserInfo) => dispatch(saveUserInfo(saveUserInfoRequest)),
       getUserInfo: () => dispatch(getUserInfo()),
       getUserInfoEmpty: () => dispatch(getUserInfoEmpty({})),
       saveUserInfoEmpty: () => dispatch(saveUserInfoEmpty({}))
