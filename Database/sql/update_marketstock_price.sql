@@ -40,7 +40,12 @@ begin
 
 		raise notice '<first>=% % %', var_current_time, var_update_date, DATE_PART('day', var_current_time - var_update_date);
 		
-		var_new_price = var_current_price + random() * 2 + 1; 
+		var_new_price = var_current_price + random() * 2 - 1;
+
+		if var_new_price < 0 then
+			var_new_price = 0;
+		end if;
+
 		raise notice '<var_new_price>=% ', var_new_price;
 		
 		if DATE_PART('day', var_current_time - var_update_date) > 0 then
