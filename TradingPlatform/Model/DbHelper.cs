@@ -271,6 +271,7 @@ namespace TradingPlatform.Model
             var userOrder = _context.User_Orders.Where(f => f.id == userOrderModel.order_id && f.user_id == currentUserID).FirstOrDefault();
             if (userOrder == null) throw new Exception("");
             userOrder.status = "canceled";
+            userOrder.status_reason = "user canceled order";
             userOrder.update_date = DateTime.UtcNow;
             _context.SaveChanges();
         }

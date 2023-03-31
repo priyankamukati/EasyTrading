@@ -67,6 +67,7 @@ const NavigationBar: FunctionComponent<INavigationBarProps> = ({
             <Nav.Link href="/order">Order History</Nav.Link>
             <Nav.Link href="/myaccount">Account</Nav.Link>
           </Nav>
+          <div>{user?.attributes?.email}</div>
           <Button variant="primary" type="submit" onClick={()=> {
             getUserInfoEmpty({}); 
             saveUserInfoEmpty({});

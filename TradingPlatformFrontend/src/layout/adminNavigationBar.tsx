@@ -64,6 +64,7 @@ const AdminNavigationBar: FunctionComponent<IAdminNavigationBarProps> = ({
       <HorizontallyContainer>
       <Navbar fixed="top" expand="lg"  bg="primary" variant="dark">
       <HorizontallyContainer>
+          <div>{user?.attributes?.email}</div>
           <Button variant="primary" type="submit" onClick={()=> {
             getUserInfoEmpty({}); 
             saveUserInfoEmpty({});

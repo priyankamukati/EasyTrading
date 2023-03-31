@@ -151,11 +151,13 @@ const UserOrderContainer: FunctionComponent<IUserOrderContainerProps> & {
           <StockText>{order.limit_price}</StockText>
           <StockText>{order.status}</StockText>
           <StockText>{order.status_reason}</StockText>
+          {order.status === 'pending' &&
           <StockText>
             <StyledButton variant="info" type="submit" onClick={(e: any) => { e.preventDefault(); cancelOrder({ order_id: order.id }) }}>
               Cancel
             </StyledButton>
           </StockText>
+}
         </HorizontalContainer>
       </Alert>
     )) : <Alert key={'no-stock'} variant={'danger'}>
