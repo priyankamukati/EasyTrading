@@ -7,6 +7,8 @@ import {
 } from "@aws-amplify/ui-react";
 import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { getUserInfoEmpty } from "../store/getUserInfo.slice";
+import { saveUserInfoEmpty } from "../store/saveUserInfo.slice";
 
 
 const NavBarContainer = styled.div`
@@ -27,11 +29,16 @@ const HorizontallyContainer = styled.div`
   flex-direction: row;
 `;
 
-export interface INavigationBarProps extends WithAuthenticatorProps {}
+export interface INavigationBarProps extends WithAuthenticatorProps {
+  getUserInfoEmpty: typeof getUserInfoEmpty;
+  saveUserInfoEmpty: typeof saveUserInfoEmpty;
+}
 
 const NavigationBar: FunctionComponent<INavigationBarProps> = ({
   signOut,
   user,
+  getUserInfoEmpty,
+  saveUserInfoEmpty
 }: INavigationBarProps) => {
   const GetSignInInfo = async () => {
     try {
@@ -60,7 +67,12 @@ const NavigationBar: FunctionComponent<INavigationBarProps> = ({
             <Nav.Link href="/order">Order History</Nav.Link>
             <Nav.Link href="/myaccount">Account</Nav.Link>
           </Nav>
-          <Button variant="primary" type="submit" onClick={()=> {signOut && signOut(); navigate('/');}}>
+          <Button variant="primary" type="submit" onClick={()=> {
+            getUserInfoEmpty({}); 
+            saveUserInfoEmpty({});
+            signOut && signOut();
+            navigate('/');}
+            }>
               LogOut
           </Button>
       </Navbar>

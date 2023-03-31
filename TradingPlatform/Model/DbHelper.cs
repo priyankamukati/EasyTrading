@@ -108,7 +108,7 @@ namespace TradingPlatform.Model
             };
         }
 
-        public void UpdateUserInfo(UserInfoModel userInfoModel, string currentUserID)
+        public UserInfoModel UpdateUserInfo(UserInfoModel userInfoModel, string currentUserID)
         {
             Console.WriteLine("update userInfoModel : ", userInfoModel.username);
             Console.WriteLine("update userInfoModel : ", userInfoModel.full_name);
@@ -122,9 +122,21 @@ namespace TradingPlatform.Model
             user.cash_balance = userInfoModel.cash_balance;
             user.update_date = DateTime.UtcNow;
             _context.SaveChanges();
+
+            return new UserInfoModel()
+            {
+                id = user.id,
+                full_name = user.full_name,
+                username = user.username,
+                email = user.email,
+                type = user.type,
+                create_date = user.create_date,
+                update_date = user.update_date,
+                cash_balance = user.cash_balance
+            };
         }
 
-        public void SaveUserInfo(UserInfoModel userInfoModel, string currentUserID)
+        public UserInfoModel SaveUserInfo(UserInfoModel userInfoModel, string currentUserID)
         {
             Console.WriteLine("save userInfoModel : ", userInfoModel.ToString());
             user_info dbUserInfo = new user_info();
@@ -137,6 +149,18 @@ namespace TradingPlatform.Model
             dbUserInfo.update_date = DateTime.UtcNow;
             _context.User_Infos.Add(dbUserInfo);
             _context.SaveChanges();
+
+            return new UserInfoModel()
+            {
+                id = dbUserInfo.id,
+                full_name = dbUserInfo.full_name,
+                username = dbUserInfo.username,
+                email = dbUserInfo.email,
+                type = dbUserInfo.type,
+                create_date = dbUserInfo.create_date,
+                update_date = dbUserInfo.update_date,
+                cash_balance = dbUserInfo.cash_balance
+            };
         }
 
         public List<UserStockModel> GetUserStockById(string currentUserID)

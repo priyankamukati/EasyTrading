@@ -8,15 +8,15 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
-/* builder.Services.AddDbContext<DataContext>(
+builder.Services.AddDbContext<DataContext>(
                 o => o.UseNpgsql(builder.Configuration.GetConnectionString("DB_CONNECTION_STRING")
             ));
- */
+ 
 
-builder.Services.AddDbContext<DataContext>(
+/* builder.Services.AddDbContext<DataContext>(
     o => o.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"))
 );
-
+ */
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

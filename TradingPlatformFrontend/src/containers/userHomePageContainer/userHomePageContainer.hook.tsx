@@ -33,7 +33,7 @@ export function UserHomePageContainerLogic({
   useEffect(() => {
     const interval = setInterval(() => {
     getAllStocks();
-     }, 1000)
+     }, 60000)
      return () => clearInterval(interval);
   }, [getAllStocks]);
 

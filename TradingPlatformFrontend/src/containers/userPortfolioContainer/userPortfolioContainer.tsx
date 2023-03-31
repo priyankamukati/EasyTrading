@@ -9,6 +9,8 @@ import { Spinner } from "react-bootstrap";
 import { LoadingState } from "../../model/loadingState";
 import Alert from "react-bootstrap/Alert";
 import NavigationBar from "../../layout/navigationBar";
+import { getUserInfoEmpty } from "../../store/getUserInfo.slice";
+import { saveUserInfoEmpty } from "../../store/saveUserInfo.slice";
 
 const UserPortfolioContainerWrapper = styled.div`
   display: flex;
@@ -94,11 +96,13 @@ const PageTitleText = styled.div`
 export interface IUserPortfolioContainerProps {
   getUserStocks: typeof getUserStocks;
   getUserStocksResponse: State<userStock[]>;
+  getUserInfoEmpty: typeof getUserInfoEmpty;
+  saveUserInfoEmpty: typeof saveUserInfoEmpty;
 }
 
 const UserPortfolioContainer: FunctionComponent<IUserPortfolioContainerProps> & {
   defaultProps: Partial<IUserPortfolioContainerProps>;
-} = ({ getUserStocks, getUserStocksResponse }: IUserPortfolioContainerProps) => {
+} = ({ getUserStocks, getUserStocksResponse, getUserInfoEmpty, saveUserInfoEmpty }: IUserPortfolioContainerProps) => {
   UserPortfolioContainerLogic({ getUserStocks } as IUserPortfolioContainerProps);
 
   const portfolioHeaders = <Alert key={'primary'} variant={'primary'}><HorizontalContainer>
@@ -131,7 +135,7 @@ const portfolioTable = <div>
 
   return (
     <UserPortfolioContainerWrapper>
-      <NavigationBar></NavigationBar>
+      <NavigationBar getUserInfoEmpty={getUserInfoEmpty} saveUserInfoEmpty={saveUserInfoEmpty}></NavigationBar>
       <PageTitleText>Portfolio</PageTitleText>
       <HorizontallyCenterContainer>
         <VerticalContainer>
@@ -165,8 +169,11 @@ UserPortfolioContainer.defaultProps = {};
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     getUserStocks: () => dispatch(getUserStocks()),
+    getUserInfoEmpty: () => dispatch(getUserInfoEmpty({})),
+    saveUserInfoEmpty: () => dispatch(saveUserInfoEmpty({})),
   };
-};
+  };
+
 
 const mapStateToProps = (state: any) => {
   return {

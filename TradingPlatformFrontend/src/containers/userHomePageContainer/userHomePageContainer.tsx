@@ -13,6 +13,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { saveOrder } from "../../store/saveOrder.slice";
 import NavigationBar from "../../layout/navigationBar";
+import { getUserInfoEmpty } from "../../store/getUserInfo.slice";
+import { saveUserInfoEmpty } from "../../store/saveUserInfo.slice";
 
 const UserHomePageContainerWrapper = styled.div`
   display: flex;
@@ -164,6 +166,8 @@ export interface IUserHomePageContainerProps {
 
   saveOrder: typeof saveOrder;
   saveOrdersResponse: State<Order[]>;
+  getUserInfoEmpty: typeof getUserInfoEmpty;
+  saveUserInfoEmpty: typeof saveUserInfoEmpty;
 }
 
 const UserHomePageContainer: FunctionComponent<IUserHomePageContainerProps> & {
@@ -173,6 +177,8 @@ const UserHomePageContainer: FunctionComponent<IUserHomePageContainerProps> & {
   getAllStocksResponse,
   saveOrder,
   saveOrdersResponse,
+  getUserInfoEmpty,
+  saveUserInfoEmpty
 }: IUserHomePageContainerProps) => {
     const {
       ticker,
@@ -231,7 +237,7 @@ const UserHomePageContainer: FunctionComponent<IUserHomePageContainerProps> & {
 
     return (
       <UserHomePageContainerWrapper>
-        <NavigationBar></NavigationBar>
+        <NavigationBar getUserInfoEmpty={getUserInfoEmpty} saveUserInfoEmpty={saveUserInfoEmpty}></NavigationBar>
         <PageTitleText>Market</PageTitleText>
         <UserHomeContainer>
           <HorizontallyCenterContainer>
@@ -380,6 +386,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
     getAllStocks: () => dispatch(getAllStocks()),
     saveOrder: (saveOrderRequest: Order) =>
       dispatch(saveOrder(saveOrderRequest)),
+      getUserInfoEmpty: () => dispatch(getUserInfoEmpty({})),
+      saveUserInfoEmpty: () => dispatch(saveUserInfoEmpty({})),
   };
 };
 

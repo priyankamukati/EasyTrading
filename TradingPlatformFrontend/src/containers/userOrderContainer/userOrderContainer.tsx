@@ -10,6 +10,8 @@ import { LoadingState } from "../../model/loadingState";
 import Alert from "react-bootstrap/Alert";
 import NavigationBar from "../../layout/navigationBar";
 import { cancelOrder } from "../../store/cancelOrder.slice";
+import { getUserInfoEmpty } from "../../store/getUserInfo.slice";
+import { saveUserInfoEmpty } from "../../store/saveUserInfo.slice";
 
 const UserOrderContainerWrapper = styled.div`
   display: flex;
@@ -106,6 +108,8 @@ export interface IUserOrderContainerProps {
   getUserAllOrdersResponse: State<Order[]>;
   cancelOrder: typeof cancelOrder;
   cancelOrderResponse: State<CancelOrder>
+  getUserInfoEmpty: typeof getUserInfoEmpty;
+  saveUserInfoEmpty: typeof saveUserInfoEmpty;
 }
 
 const UserOrderContainer: FunctionComponent<IUserOrderContainerProps> & {
@@ -114,7 +118,9 @@ const UserOrderContainer: FunctionComponent<IUserOrderContainerProps> & {
   getUserAllOrders,
   getUserAllOrdersResponse,
   cancelOrder,
-  cancelOrderResponse
+  cancelOrderResponse,
+  getUserInfoEmpty,
+  saveUserInfoEmpty
 }: IUserOrderContainerProps) => {
     UserOrderContainerLogic({
       getUserAllOrders,
@@ -165,7 +171,7 @@ const UserOrderContainer: FunctionComponent<IUserOrderContainerProps> & {
 
     return (
       <UserOrderContainerWrapper>
-        <NavigationBar></NavigationBar>
+        <NavigationBar getUserInfoEmpty={getUserInfoEmpty} saveUserInfoEmpty={saveUserInfoEmpty}></NavigationBar>
         <PageTitleText>Transaction History</PageTitleText>
         <HorizontallyCenterContainer>
           <VerticalContainer>
@@ -200,7 +206,9 @@ UserOrderContainer.defaultProps = {};
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     getUserAllOrders: () => dispatch(getUserAllOrders()),
-    cancelOrder: (cancelOrderRequest: CancelOrder) => dispatch(cancelOrder(cancelOrderRequest))
+    cancelOrder: (cancelOrderRequest: CancelOrder) => dispatch(cancelOrder(cancelOrderRequest)),
+    getUserInfoEmpty: () => dispatch(getUserInfoEmpty({})),
+    saveUserInfoEmpty: () => dispatch(saveUserInfoEmpty({})),
   };
 };
 

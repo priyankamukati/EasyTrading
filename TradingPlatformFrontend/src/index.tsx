@@ -33,8 +33,7 @@ root.render(
           <Route path="/portfolio" element={<UserPortfolioContainer />} />
           <Route path="/order" element={<UserOrderContainer />}/>
           <Route path="/myaccount" element={<UserAccountContainer />} />
-{/*           <Route path="/userinfo" element={<UserInfoPageContainer />} />
- */}        </Routes>
+        </Routes>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

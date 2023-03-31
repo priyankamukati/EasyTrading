@@ -1,0 +1,25 @@
+- git clone https://github.com/priyankamukati/EasyTrading.git
+- cd EasyTrading
+- code . (if using vscode)
+
+Database
+- using pgadmin execute create table script (init.sql)
+- using pgadmin execute execute 3 stored functions
+- on terminal execute: ./Database/run_dbfuncs.sh
+- Runs on localhost:5432
+
+Dotnet
+- open new terminal
+- cd TradingPlatform
+- dotnet run
+- runs on http://localhost:5181
+
+React
+- open new terminal
+- cd TradingPlatformFrontend
+- npm install
+- npm run start
+- runs on http://localhost:3000
+
+
+ 

@@ -21,7 +21,14 @@ const initialState = {
 const getUserInfoSlice = createSlice({
   name: "getUserInfo",
   initialState,
-  reducers: {},
+  reducers: {    
+    getUserInfoEmpty(state, action) {
+    // Use a "state machine" approach for loading state instead of booleans
+    state.data = null;
+    state.loading = LoadingState.Idle;
+    state.error = null;
+    }
+  },
   extraReducers: {
     [getUserInfo.pending.type]: (state, _) => {
       if (state.loading === LoadingState.Idle) {
@@ -44,3 +51,4 @@ const getUserInfoSlice = createSlice({
 });
 
 export const getUserInfoReducer = getUserInfoSlice.reducer;
+export const { getUserInfoEmpty } = getUserInfoSlice.actions

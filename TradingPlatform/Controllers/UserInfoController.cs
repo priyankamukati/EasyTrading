@@ -40,15 +40,22 @@ namespace TradingPlatform.Controllers
                 ClaimsPrincipal currentUser = this.User;
                 var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (currentUserID != null)
+                Console.WriteLine("GET USER :::::::::::::::::: " + currentUserID);
+
+                if (!String.IsNullOrEmpty(currentUserID))
                 {
                     UserInfoModel data = _db.GetUserInfoById(currentUserID);
-                    return Ok(data);
-                }
-                else
-                {
+                    
+                    if(!String.IsNullOrEmpty(data.id))
+                    {
+                      return Ok(data);
+                    } else {
+                      return NotFound();
+                    }
+                } else {
                     return NotFound();
                 }
+
             }
             catch (Exception ex)
             {
@@ -71,9 +78,13 @@ namespace TradingPlatform.Controllers
                     model.type = "user";
                 }
 
+
+
                 ClaimsPrincipal currentUser = this.User;
                 var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                Console.WriteLine("update currentUserID : ", currentUserID);
+
+                Console.WriteLine("SAVE USER :::::::::::::::::: " + currentUserID);
+
 
                 if (currentUserID != null)
                 {
@@ -82,16 +93,16 @@ namespace TradingPlatform.Controllers
 
                     if (data.email.Equals(""))
                     {
-                        _db.SaveUserInfo(model, currentUserID);
+                        data = _db.SaveUserInfo(model, currentUserID);
                     }
                     
                     else
                     {                       
                         model.cash_balance = data.cash_balance;
-                        _db.UpdateUserInfo(model, currentUserID);
+                        data = _db.UpdateUserInfo(model, currentUserID);
                     }
 
-                    return Ok(model);
+                    return Ok(data);
                 }
                 else
                 {

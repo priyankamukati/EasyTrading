@@ -13,8 +13,9 @@ import Button from "react-bootstrap/Button";
 import { saveStock } from "../../store/saveStock.slice";
 import NavigationBar from "../../layout/navigationBar";
 import AdminNavigationBar from "../../layout/adminNavigationBar";
-import { getUserInfo, getUserInfoReducer } from "../../store/getUserInfo.slice";
+import { getUserInfo, getUserInfoEmpty, getUserInfoReducer } from "../../store/getUserInfo.slice";
 import { GetUserInfo, UserInfo } from "../../model/userInfo";
+import { saveUserInfoEmpty } from "../../store/saveUserInfo.slice";
 
 const AdminHomePageContainerWrapper = styled.div`
   display: flex;
@@ -158,6 +159,9 @@ export interface IAdminHomePageContainerProps {
 
   getUserInfo: typeof getUserInfo;
   getUserInfoResponse: State<GetUserInfo>;
+
+  getUserInfoEmpty: typeof getUserInfoEmpty;
+  saveUserInfoEmpty: typeof saveUserInfoEmpty;
 }
 
 const AdminHomePageContainer: FunctionComponent<IAdminHomePageContainerProps> & {
@@ -168,7 +172,9 @@ const AdminHomePageContainer: FunctionComponent<IAdminHomePageContainerProps> & 
   saveStock,
   saveStocksResponse,
   getUserInfo,
-  getUserInfoResponse
+  getUserInfoResponse,
+  getUserInfoEmpty,
+  saveUserInfoEmpty
 }: IAdminHomePageContainerProps) => {
     const {
       ticker,
@@ -190,7 +196,7 @@ const AdminHomePageContainer: FunctionComponent<IAdminHomePageContainerProps> & 
 
 
     const noAdminContent = <AdminHomePageContainerWrapper>
-      <AdminNavigationBar></AdminNavigationBar>
+      <AdminNavigationBar getUserInfoEmpty={getUserInfoEmpty} saveUserInfoEmpty={saveUserInfoEmpty}></AdminNavigationBar>
       <VerticalCenterContainer>
         <HorizontallyCenterContainer>
           <TextContent>
@@ -232,7 +238,7 @@ const AdminHomePageContainer: FunctionComponent<IAdminHomePageContainerProps> & 
 
     const adminContent = (
       <AdminHomePageContainerWrapper>
-        <AdminNavigationBar></AdminNavigationBar>
+        <AdminNavigationBar getUserInfoEmpty={getUserInfoEmpty} saveUserInfoEmpty={saveUserInfoEmpty}></AdminNavigationBar>
         <PageTitleText>Admin Panel</PageTitleText>
         <HorizontallyCenterContainer>
           <VerticalContainer>
@@ -351,6 +357,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
     saveStock: (saveStockRequest: Stock) =>
       dispatch(saveStock(saveStockRequest)),
     getUserInfo: () => dispatch(getUserInfo()),
+    getUserInfoEmpty: () => dispatch(getUserInfoEmpty({})),
+    saveUserInfoEmpty: () => dispatch(saveUserInfoEmpty({}))
   };
 };
 

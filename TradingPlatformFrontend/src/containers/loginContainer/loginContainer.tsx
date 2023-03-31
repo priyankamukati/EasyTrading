@@ -3,6 +3,7 @@ import { Amplify, Auth } from "aws-amplify";
 import Alert from "react-bootstrap/Alert";
 import {
   Authenticator,
+  useAuthenticator,
   withAuthenticator,
   WithAuthenticatorProps,
 } from "@aws-amplify/ui-react";
@@ -13,10 +14,10 @@ import config from "../../aws-exports-new";
 import { Dispatch, FunctionComponent, useEffect } from "react";
 import { connect } from "react-redux";
 import { GetUserInfo, SaveUserInfo, UserInfo } from "../../model/userInfo";
-import { saveUserInfo } from "../../store/saveUserInfo.slice";
+import { saveUserInfo, saveUserInfoEmpty } from "../../store/saveUserInfo.slice";
 import { State } from "../../model/state";
 import { LoadingState } from "../../model/loadingState";
-import { getUserInfo } from "../../store/getUserInfo.slice";
+import { getUserInfo, getUserInfoEmpty } from "../../store/getUserInfo.slice";
 Amplify.configure(config);
 
 interface ILoginContainerProps extends WithAuthenticatorProps {
@@ -25,6 +26,9 @@ interface ILoginContainerProps extends WithAuthenticatorProps {
 
   getUserInfo: typeof getUserInfo;
   getUserInfoResponse: State<GetUserInfo>;
+
+  getUserInfoEmpty: typeof getUserInfoEmpty;
+  saveUserInfoEmpty: typeof saveUserInfoEmpty;
 }
 
 const LoginContainer: FunctionComponent<ILoginContainerProps> & {
@@ -35,7 +39,9 @@ const LoginContainer: FunctionComponent<ILoginContainerProps> & {
   saveUserInfo,
   saveUserInfoResponse,
   getUserInfo,
-  getUserInfoResponse
+  getUserInfoResponse,
+  getUserInfoEmpty,
+  saveUserInfoEmpty
 }: ILoginContainerProps) => {
   const navigate = useNavigate();
 
@@ -57,32 +63,60 @@ const LoginContainer: FunctionComponent<ILoginContainerProps> & {
     },
   };
   
+
+  const { route } = useAuthenticator(context => [context.route]);
+
+
   useEffect(() => {
-    console.log("user : ", user)
-    if (user) {
+    if (user && route === 'authenticated') {
+      getUserInfo();
+  }}, [user, getUserInfo]);
+
+
+  useEffect(() => {
+    if (user && getUserInfoResponse.error) {
+      console.log("error: ", getUserInfoResponse.error)
+
+      // the user is not present
       const userInfo = new UserInfo();
       userInfo.full_name = user.attributes?.name;
       userInfo.username = user.attributes?.preferred_username;
       userInfo.passcode = user.attributes?.nickname;
       userInfo.email = user.attributes?.email; 
       saveUserInfo(userInfo);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (saveUserInfoResponse.error || saveUserInfoResponse?.data) {
-      getUserInfo();
-  }}, [saveUserInfoResponse]);
-
-
-  useEffect(() => {
-    if (getUserInfoResponse?.data) {
-      if (getUserInfoResponse.data?.type == "admin") {
-        navigate('/admin')
     } else {
-       navigate('/home')
+
+      if (getUserInfoResponse.data && getUserInfoResponse.data.type) {
+        console.log("this is the type : ", getUserInfoResponse.data.type)
+        if (getUserInfoResponse.data.type === "admin") {
+          console.log("get i am admin : ", getUserInfoResponse.data.type)
+          navigate('/admin')
+      } else {
+         console.log("get i am trader : ", getUserInfoResponse.data.type)
+         navigate('/home')
+      }
     }
-  }}, [getUserInfoResponse]);
+  }
+  }, [user, navigate, getUserInfoResponse]);
+
+
+
+  useEffect(() => {
+    if (saveUserInfoResponse.loading === LoadingState.Idle && saveUserInfoResponse.data?.type !== undefined) {
+
+      console.log(" saveUserInfoResponse: ", saveUserInfoResponse.loading, saveUserInfoResponse.data?.type)
+      console.log("this is the type : ", saveUserInfoResponse.data.type)
+
+
+      if (saveUserInfoResponse.data.type === "admin") {
+          console.log("save i am admin : ", saveUserInfoResponse.data.type)
+          navigate('/admin')
+      } else {
+         console.log("save i am trader : ", saveUserInfoResponse.data.type)
+         navigate('/home')
+      }
+
+  }}, [saveUserInfoResponse]);
 
 
   return (
@@ -95,7 +129,11 @@ const LoginContainer: FunctionComponent<ILoginContainerProps> & {
         <div></div>
       )}
       <Authenticator services={services} initialState="signUp">
-        {({ signOut }) => <button onClick={signOut}>Sign out</button>}
+        {({ signOut }) => <button onClick={(e) => {
+          getUserInfoEmpty({}); 
+          saveUserInfoEmpty({});
+          signOut && signOut(e)}
+          }>Sign out</button>}
       </Authenticator>
       <div>Welcome, {user?.attributes?.name}</div>
     </div>
@@ -106,9 +144,10 @@ LoginContainer.defaultProps = {};
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
-    saveUserInfo: (saveUserInfoRequest: UserInfo) =>
-      dispatch(saveUserInfo(saveUserInfoRequest)),
-      getUserInfo: () => dispatch(getUserInfo())
+    saveUserInfo: (saveUserInfoRequest: UserInfo) => dispatch(saveUserInfo(saveUserInfoRequest)),
+      getUserInfo: () => dispatch(getUserInfo()),
+      getUserInfoEmpty: () => dispatch(getUserInfoEmpty({})),
+      saveUserInfoEmpty: () => dispatch(saveUserInfoEmpty({}))
   };
 };
 

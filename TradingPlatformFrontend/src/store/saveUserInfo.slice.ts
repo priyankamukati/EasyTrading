@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { stat } from "fs";
 import { API_SERVICE_URL, appURL } from "../config";
 import { LoadingState } from "../model/loadingState";
 import { SaveUserInfo, UserInfo } from "../model/userInfo";
@@ -22,7 +23,14 @@ const initialState = {
 const saveUserInfoSlice = createSlice({
   name: "saveUserInfo",
   initialState,
-  reducers: {},
+  reducers: {
+    saveUserInfoEmpty(state, action) {
+      // Use a "state machine" approach for loading state instead of booleans
+        state.data = null;
+        state.loading = LoadingState.Idle;
+        state.error = null;
+    },
+  },
   extraReducers: {
     [saveUserInfo.pending.type]: (state, _) => {
       if (state.loading === LoadingState.Idle) {
@@ -45,3 +53,4 @@ const saveUserInfoSlice = createSlice({
 });
 
 export const saveUserInfoReducer = saveUserInfoSlice.reducer;
+export const { saveUserInfoEmpty } = saveUserInfoSlice.actions

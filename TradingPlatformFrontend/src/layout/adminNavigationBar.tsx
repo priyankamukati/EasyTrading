@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FunctionComponent, useEffect } from "react";
+import { Dispatch, FunctionComponent, useEffect } from "react";
 import { Auth } from "aws-amplify";
 import {
   withAuthenticator,
@@ -7,6 +7,9 @@ import {
 } from "@aws-amplify/ui-react";
 import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { getUserInfoEmpty } from "../store/getUserInfo.slice";
+import { saveUserInfoEmpty } from "../store/saveUserInfo.slice";
+import { connect } from "react-redux";
 
 
 const NavBarContainer = styled.div`
@@ -28,11 +31,16 @@ const HorizontallyContainer = styled.div`
   flex-grow: 1;
 `;
 
-export interface IAdminNavigationBarProps extends WithAuthenticatorProps {}
+export interface IAdminNavigationBarProps extends WithAuthenticatorProps {
+  getUserInfoEmpty: typeof getUserInfoEmpty;
+  saveUserInfoEmpty: typeof saveUserInfoEmpty;
+}
 
 const AdminNavigationBar: FunctionComponent<IAdminNavigationBarProps> = ({
   signOut,
   user,
+  getUserInfoEmpty,
+  saveUserInfoEmpty
 }: IAdminNavigationBarProps) => {
   const GetSignInInfo = async () => {
     try {
@@ -56,7 +64,12 @@ const AdminNavigationBar: FunctionComponent<IAdminNavigationBarProps> = ({
       <HorizontallyContainer>
       <Navbar fixed="top" expand="lg"  bg="primary" variant="dark">
       <HorizontallyContainer>
-          <Button variant="primary" type="submit" onClick={()=> {signOut && signOut(); navigate('/');}}>
+          <Button variant="primary" type="submit" onClick={()=> {
+            getUserInfoEmpty({}); 
+            saveUserInfoEmpty({});
+            signOut && signOut();
+            navigate('/');}
+            }>
               LogOut
           </Button>
           </HorizontallyContainer>
@@ -67,4 +80,5 @@ const AdminNavigationBar: FunctionComponent<IAdminNavigationBarProps> = ({
   );
 };
 
-export default withAuthenticator(AdminNavigationBar, { hideSignUp: true });
+
+export default withAuthenticator(AdminNavigationBar, { hideSignUp: true } );

@@ -14,6 +14,8 @@ import { userInfo } from "os";
 import { saveUserCashBalance } from "../../store/saveBalance.slice";
 import { UpdateUserCashBalance } from "../../model/UpdateUserCashBalance";
 import NavigationBar from "../../layout/navigationBar";
+import { getUserInfoEmpty } from "../../store/getUserInfo.slice";
+import { saveUserInfoEmpty } from "../../store/saveUserInfo.slice";
 
 const UserAccountContainerWrapper = styled.div`
   display: flex;
@@ -114,6 +116,8 @@ export interface IUserAccountContainerProps {
 
   saveUserCashBalance: typeof saveUserCashBalance;
   saveUserCashBalanceResponse: State<UpdateUserCashBalance>;
+  getUserInfoEmpty: typeof getUserInfoEmpty;
+  saveUserInfoEmpty: typeof saveUserInfoEmpty;
 }
 
 const UserAccountContainer: FunctionComponent<IUserAccountContainerProps> & {
@@ -123,6 +127,8 @@ const UserAccountContainer: FunctionComponent<IUserAccountContainerProps> & {
   getUserCashBalanceResponse,
   saveUserCashBalance,
   saveUserCashBalanceResponse,
+  getUserInfoEmpty,
+  saveUserInfoEmpty
 }: IUserAccountContainerProps) => {
     console.log(
       "getUserCashBalanceResponse: ",
@@ -139,7 +145,7 @@ const UserAccountContainer: FunctionComponent<IUserAccountContainerProps> & {
     const balance = getUserCashBalanceResponse.data?.cash_balance ? '$' + getUserCashBalanceResponse.data?.cash_balance.toFixed(2) : '$0'
     return (
       <UserAccountContainerWrapper>
-        <NavigationBar></NavigationBar>
+        <NavigationBar getUserInfoEmpty={getUserInfoEmpty} saveUserInfoEmpty={saveUserInfoEmpty}></NavigationBar>
         <PageTitleText>My Account</PageTitleText>
         <VerticalContainer>
           <HorizontallyCenterContainer>
@@ -227,6 +233,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
     getUserCashBalance: () => dispatch(getUserCashBalance()),
     saveUserCashBalance: (saveUserCashBalanceRequest: UpdateUserCashBalance) =>
       dispatch(saveUserCashBalance(saveUserCashBalanceRequest)),
+      getUserInfoEmpty: () => dispatch(getUserInfoEmpty({})),
+      saveUserInfoEmpty: () => dispatch(saveUserInfoEmpty({})),
   };
 };
 
